@@ -13,6 +13,17 @@ module.exports = async (ctx) => {
   } = ctx.request.body
   // 如果可以获取到isbn，则开始调用api
     if (isbn) {
+    // 当添加图书时判断图书是否已经存在
+      const findRes = await mysql('books').select().where('isbn', isbn)
+      if (findRes.length) {
+        ctx.state = {
+          code: -1,
+          data: {
+            msg: '图书已存在'
+        }
+      }
+        return
+    }
       let url = 'https://api.douban.com/v2/book/isbn/' + isbn
       const bookinfo = await getJSON(url)
       const rate = bookinfo.rating.average

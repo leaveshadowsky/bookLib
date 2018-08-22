@@ -1,16 +1,28 @@
 <template>
   <div>
-    <!-- <button open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">获取用户信息</button> -->
+    <div v-for="book in books" :key='book.id'>
+      <div>{{book.title}}</div>
+    </div>
   </div>
 </template>
 <script>
+import { get } from "@/utils";
 export default {
-  name: 'Book',
-  data () {
-    return {}
+  data() {
+    return {
+      books: []
+    };
   },
-  async created () {}
-}
+  methods: {
+    async getBookList() {
+      const books = await get("/weapp/booklist");
+      this.books = books.list;
+    }
+  },
+  mounted() {
+    this.getBookList();
+  }
+};
 </script>
 <style>
 </style>
